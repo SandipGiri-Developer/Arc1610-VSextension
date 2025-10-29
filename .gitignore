@@ -1,0 +1,54 @@
+# Node modules
+node_modules/
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build and distribution outputs
+dist/
+build/
+localpycs/
+*.toc
+*.zip
+*.pkg
+*.pyz
+*.txt
+*.html
+
+# TypeScript build files
+*.js.map
+*.tsbuildinfo
+
+venv/
+*/venv/
+.venv/
+env/
+.env
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
+# VS Code and development artifacts
+.vscode/
+.vscode-test.mjs
+.vscode-test/
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+backend/arc1610_api.exe
+*.exe
