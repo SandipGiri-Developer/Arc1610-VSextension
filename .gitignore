@@ -3,7 +3,7 @@ node_modules/
 
 
 # Build and distribution outputs
-dist/
+arc1610_api.exe
 build/
 localpycs/
 
@@ -15,9 +15,7 @@ env/
 .env
 
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+
 
 
 # VS Code and development artifacts
