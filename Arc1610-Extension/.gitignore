@@ -1,0 +1,19 @@
+# Backend executable
+backend/arc1610_api.exe
+
+# VS Code packaged extension
+*.vsix
+
+# Dependency directories
+node_modules/
+
+# Compiled output folder
+dist/
+
+# VS Code workspace settings
+.vscode/
+
+# Build artifacts and logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
