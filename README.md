@@ -20,7 +20,6 @@ Because everything runs on your machine, your code remains **100% private**.
 *   **Completely Local & Private**: Your code and your questions never leave your machine.
 *   **Streaming Responses**: The AI's answers are typed out in real-time for a responsive, modern chat experience.
 *   **Markdown & Code Highlighting**: Responses are beautifully formatted, with full syntax highlighting for code snippets.
-
 *   **Theme-Aware UI**: The chat interface automatically adapts to your current VS Code theme.
 
 ##  How It Works
@@ -31,40 +30,45 @@ Arc1610 uses a RAG pipeline to provide context-aware answers.
 2.  **Querying**: When you ask a question in the VS Code extension, it's sent to a local FastAPI server. The server converts your question into a vector and uses the FAISS database to find the most relevant chunks of code from your project.
 3.  **Generation**: The relevant code chunks (the context) and your original question are passed to a local LLM (like Mistral via Ollama). The LLM then generates a comprehensive answer based *only* on the provided context.
 
-##  Requirements
 
-Before you begin, you need to have the following installed and running.
+
+
+
+## System Requirements
+
+### Hardware
+
+Running Large Language Models locally is resource-intensive. For a smooth experience, the following is recommended:
+
+| Component | Minimum | Recommended |
+| :--- | :--- | :--- |
+| **RAM** | 16 GB | 32 GB or more |
+| **GPU** | Not required (CPU-only works) | NVIDIA (8GB+ VRAM) or Apple Silicon |
+| **Storage** | 10 GB free space | 25 GB+ free space (for models & indexes) |
+
+*A dedicated GPU will significantly accelerate model inference speeds.*
+
+### Software
 
 1.  **Ollama**: The engine for running the local LLM.
-    *   [Download Ollama here](https://ollama.com/).
-    *   After installing, pull the Mistral model by running this command in your terminal:
+    -   [Download Ollama here](https://ollama.com/).
+    -   After installing, pull the `mistral` model:
         ```bash
         ollama run mistral
         ```
 
-2.  **Node.js & npm**: Required to build and run the VS Code extension itself.
-    -   [Download Node.js here](https://nodejs.org/) (v18 or higher recommended).        
+2.  **Node.js & npm**: Required to build and run the VS Code extension.
+    -   [Download Node.js here](https://nodejs.org/) (v18 or higher recommended).
 
 3.  **Python**: Version 3.8 or higher.
-
-4.  **Python Dependencies**: A set of libraries for indexing and serving the AI.
-    *   Create a file named `requirements.txt` in your project's root folder and paste the following into it:
-        ```
-        fastapi
-        uvicorn[standard]
-        langchain
-        langchain-community
-        langchain-text-splitters
-        faiss-cpu
-        sentence-transformers
-        chardet
-        ```
-    *   Install these dependencies by running:
+    -   Install all required Python libraries with one command:
         ```bash
-        pip install -r requirements.txt
+        python.exe -m pip install -r requirements.txt
         ```
 
----
+
+
+
 
 ##  Getting Started
 
