@@ -19,13 +19,12 @@
     "Programming Languages"
   ],
   "contributes": {
-     "commands": [
-        {
-            "command": "arc1610.indexWorkspace",
-            "title": "Arc1610: Index this Workspace"
-        }
+    "commands": [
+      {
+        "command": "arc1610.indexWorkspace",
+        "title": "Arc1610: Index this Workspace"
+      }
     ],
-
     "viewContainers": {
       "activitybar": [
         {
@@ -43,6 +42,21 @@
           "type": "webview"
         }
       ]
+    },
+    "configuration": {
+      "title": "Arc1610",
+      "properties": {
+        "arc1610.modelName": {
+          "type": "string",
+          "default": "mistral",
+          "description": "The local Ollama model to use for inference."
+        },
+        "arc1610.apiPort": {
+          "type": "number",
+          "default": 8000,
+          "description": "Port to run the local API backend on."
+        }
+      }
     }
   },
   "scripts": {
@@ -69,5 +83,8 @@
     "typescript": "^5.9.3",
     "webpack": "^5.102.0",
     "webpack-cli": "^6.0.1"
-  }
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ]
 }
