@@ -160,6 +160,10 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
           this.newChat();
           break;
           
+        case 'executeCommand':
+          vscode.commands.executeCommand(msg.command);
+          break;
+          
         case 'approveAction':
           if (this.agent) {
             this.agent.resolveApproval(msg.approved);
@@ -241,6 +245,9 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
       const requireApproval = vscode.workspace.getConfiguration('arc1610').get<boolean>('agent.requireApproval', true);
       const maxIterations = vscode.workspace.getConfiguration('arc1610').get<number>('agent.maxIterations', 15);
       
+      if (this.agent) {
+        this.agent.cancel();
+      }
       this.agent = new AgentLoop(this.indexer, requireApproval);
       
       // Note: In a robust implementation, we would append the full agent history (including tools).

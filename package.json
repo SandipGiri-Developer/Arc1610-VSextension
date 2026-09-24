@@ -141,7 +141,7 @@
         "arc1610.modelName": {
           "type": "string",
           "default": "",
-          "description": "The model name to use. Leave empty for provider default (e.g., llama3.2 for Ollama, gpt-4o-mini for OpenAI, claude-sonnet-4-20250514 for Anthropic)."
+          "description": "The model name to use. Leave empty for provider default (e.g., llama3.2 for Ollama, gpt-4o-mini for OpenAI, claude-3-5-sonnet-20241022 for Anthropic)."
         },
         "arc1610.ollama.endpoint": {
           "type": "string",

@@ -39,6 +39,9 @@ export type WebviewToExtensionMessage = {
 } | {
     type: 'getIndexStatus';
 } | {
+    type: 'executeCommand';
+    command: string;
+} | {
     type: 'webviewReady';
 };
 export type ExtensionToWebviewMessage = {
