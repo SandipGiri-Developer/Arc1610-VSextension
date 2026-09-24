@@ -23,6 +23,7 @@ export type WebviewToExtensionMessage =
   | { type: 'startIndexing'; fullReindex?: boolean }
   | { type: 'cancelIndexing' }
   | { type: 'getIndexStatus' }
+  | { type: 'executeCommand'; command: string }
   | { type: 'webviewReady' };
 
 // ─── Messages from Extension to Webview ────────────────────────────────────
@@ -59,7 +60,7 @@ export function validateWebviewMessage(data: unknown): WebviewToExtensionMessage
     'sendMessage', 'cancelGeneration', 'newChat', 'approveAction',
     'getConfig', 'setProvider', 'setModel', 'setApiKey',
     'testConnection', 'startIndexing', 'cancelIndexing',
-    'getIndexStatus', 'webviewReady',
+    'getIndexStatus', 'executeCommand', 'webviewReady',
   ]);
 
   if (!validTypes.has(msg.type)) {
@@ -90,6 +91,11 @@ export function validateWebviewMessage(data: unknown): WebviewToExtensionMessage
       break;
     case 'setApiKey':
       if (typeof msg.provider !== 'string' || typeof msg.key !== 'string') {
+        return null;
+      }
+      break;
+    case 'executeCommand':
+      if (typeof msg.command !== 'string') {
         return null;
       }
       break;

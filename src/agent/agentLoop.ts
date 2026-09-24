@@ -323,6 +323,7 @@ export class AgentLoop {
   }
 
   private async applyToolResult(toolName: string, args: Record<string, unknown>): Promise<void> {
+    // @ts-ignore - Webpack handles this resolution, but tsc complains without .js
     const { CreateFileTool, EditFileTool } = await import('./tools');
 
     switch (toolName) {

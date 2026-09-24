@@ -213,7 +213,7 @@ export class AnthropicProvider implements ILLMProvider {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-3-5-sonnet-20241022',
           max_tokens: 1,
           messages: [{ role: 'user', content: 'hi' }],
         }),
@@ -225,7 +225,7 @@ export class AnthropicProvider implements ILLMProvider {
       }
 
       // Even a 400 means we can reach the API
-      return ['claude-sonnet-4-20250514', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'];
+      return ['claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'];
     } catch (error: unknown) {
       if (error instanceof Arc1610Error) { throw error; }
       throw new Arc1610Error(
@@ -237,7 +237,7 @@ export class AnthropicProvider implements ILLMProvider {
   }
 
   getDefaultModel(): string {
-    return 'claude-sonnet-4-20250514';
+    return 'claude-3-5-sonnet-20241022';
   }
 
   dispose(): void {
