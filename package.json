@@ -74,7 +74,7 @@
         {
           "id": "arc1610-sidebar",
           "title": "Arc1610",
-          "icon": "media/icon.svg"
+          "icon": "$(hubot)"
         }
       ]
     },

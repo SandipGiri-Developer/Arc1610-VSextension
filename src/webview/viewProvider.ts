@@ -356,6 +356,14 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
   <script nonce="${nonce}">
     // Pass VS Code API to the React app
     window.vscode = acquireVsCodeApi();
+    
+    // Global error handler to catch script loading/syntax errors
+    window.addEventListener('error', function(event) {
+      document.body.innerHTML += '<div style="color: red; padding: 20px;">' + 
+        '<h3>Critical Webview Error</h3>' +
+        '<pre style="white-space: pre-wrap;">' + event.message + '\\n' + event.filename + ':' + event.lineno + '</pre>' +
+        '</div>';
+    });
   </script>
   <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
 </body>

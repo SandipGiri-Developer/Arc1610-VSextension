@@ -12,8 +12,8 @@ export function getCsp(webview: vscode.Webview, nonce: string): string {
     `default-src 'none'`,
     // Allow styles from the extension uri and inline styles (needed by React sometimes)
     `style-src ${webview.cspSource} 'unsafe-inline'`,
-    // Only allow scripts with the generated nonce
-    `script-src 'nonce-${nonce}'`,
+    // Allow scripts with the generated nonce, plus standard webview sources
+    `script-src ${webview.cspSource} 'unsafe-inline' 'unsafe-eval' 'nonce-${nonce}'`,
     // Allow fonts if needed
     `font-src ${webview.cspSource}`,
     // The webview doesn't make direct API calls — all network happens in the extension host
