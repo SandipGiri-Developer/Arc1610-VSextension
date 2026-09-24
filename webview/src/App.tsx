@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useMessaging } from './hooks/useMessaging';
 import { ExtensionToWebviewMessage, IndexingProgress } from './types/messages';
 import { MessageBubble } from './components/MessageBubble';
+import { SettingsView } from './components/SettingsView';
 
 interface Message {
   role: 'user' | 'assistant' | 'tool';
@@ -12,10 +13,11 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [config, setConfig] = useState({ provider: '', model: '', hasApiKey: true });
+  const [config, setConfig] = useState({ provider: '', model: '', hasApiKey: true, availableProviders: [] as string[] });
   const [indexStatus, setIndexStatus] = useState({ indexed: false, inProgress: false });
   const [progress, setProgress] = useState<IndexingProgress | null>(null);
   const [pendingApproval, setPendingApproval] = useState<{toolName: string, desc: string, diff?: string} | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
   
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +61,12 @@ export default function App() {
         break;
         
       case 'config':
-        setConfig({ provider: msg.provider, model: msg.model, hasApiKey: msg.hasApiKey });
+        setConfig({ 
+          provider: msg.provider, 
+          model: msg.model, 
+          hasApiKey: msg.hasApiKey,
+          availableProviders: msg.availableProviders || ['ollama', 'openai', 'anthropic'] 
+        });
         break;
         
       case 'indexStatus':
@@ -109,16 +116,28 @@ export default function App() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header */}
-      <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--vscode-panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--vscode-sideBar-background)' }}>
-        <div style={{ fontWeight: 'bold' }}>Arc1610</div>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button title="New Chat" className="secondary" onClick={() => { setMessages([]); postMessage({ type: 'newChat' }); }}>+</button>
-        </div>
-      </div>
+      {showSettings ? (
+        <SettingsView 
+          currentProvider={config.provider}
+          currentModel={config.model}
+          hasApiKey={config.hasApiKey}
+          availableProviders={config.availableProviders}
+          postMessage={postMessage}
+          onClose={() => setShowSettings(false)}
+        />
+      ) : (
+        <>
+          {/* Header */}
+          <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--vscode-panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--vscode-sideBar-background)' }}>
+            <div style={{ fontWeight: 'bold' }}>Arc1610</div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button title="Settings" className="secondary" onClick={() => setShowSettings(true)}>⚙️</button>
+              <button title="New Chat" className="secondary" onClick={() => { setMessages([]); postMessage({ type: 'newChat' }); }}>+</button>
+            </div>
+          </div>
 
-      {/* Index Status Bar */}
-      <div style={{ padding: '4px 12px', fontSize: '11px', backgroundColor: 'var(--vscode-statusBar-background)', color: 'var(--vscode-statusBar-foreground)', display: 'flex', justifyContent: 'space-between' }}>
+          {/* Index Status Bar */}
+          <div style={{ padding: '4px 12px', fontSize: '11px', backgroundColor: 'var(--vscode-statusBar-background)', color: 'var(--vscode-statusBar-foreground)', display: 'flex', justifyContent: 'space-between' }}>
         <span>{config.provider} {config.model ? `(${config.model})` : ''}</span>
         {indexStatus.inProgress && progress ? (
           <span>Indexing: {(progress.progress * 100).toFixed(0)}%</span>
@@ -203,6 +222,8 @@ export default function App() {
           </div>
         </form>
       </div>
+        </>
+      )}
     </div>
   );
 }

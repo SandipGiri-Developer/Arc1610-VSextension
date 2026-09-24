@@ -13,6 +13,7 @@ import { ChatMessage } from '../providers/types';
 import { Logger } from '../utils/logger';
 import { ExtensionToWebviewMessage, validateWebviewMessage, WebviewToExtensionMessage } from './messageTypes';
 import { getCsp } from './securityPolicy';
+import { OllamaManager } from '../utils/ollamaManager';
 
 export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'arc1610.chatView';
@@ -217,6 +218,18 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
 
   private async handleUserMessage(text: string, contextFiles?: string[]) {
     try {
+      const config = await this.providerRegistry.readConfig();
+      
+      // Ensure Ollama is running if selected
+      if (config.provider === 'ollama') {
+        const isRunning = await OllamaManager.ensureRunning(config.endpoint);
+        if (!isRunning) {
+          this.postMessage({ type: 'streamError', error: 'Ollama is not running. Please start it to continue.' });
+          this.postMessage({ type: 'streamDone' });
+          return;
+        }
+      }
+
       // Ensure index is loaded
       await this.indexer.ensureLoaded();
       
@@ -225,7 +238,6 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
       // Save user message to history
       this.chatHistory.push({ role: 'user', content: text });
       
-      const config = await this.providerRegistry.readConfig();
       const requireApproval = vscode.workspace.getConfiguration('arc1610').get<boolean>('agent.requireApproval', true);
       const maxIterations = vscode.workspace.getConfiguration('arc1610').get<number>('agent.maxIterations', 15);
       

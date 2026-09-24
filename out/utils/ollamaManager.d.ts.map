@@ -1,0 +1,1 @@
+{"version":3,"file":"ollamaManager.d.ts","sourceRoot":"","sources":["../../src/utils/ollamaManager.ts"],"names":[],"mappings":"AAIA,qBAAa,aAAa;IACxB,OAAO,CAAC,MAAM,CAAC,WAAW,CAAS;IAEnC;;;OAGG;WACU,aAAa,CAAC,QAAQ,GAAE,MAAiC,GAAG,OAAO,CAAC,OAAO,CAAC;mBA2BpE,IAAI;mBAUJ,WAAW;CA6CjC"}

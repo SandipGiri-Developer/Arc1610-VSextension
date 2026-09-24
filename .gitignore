@@ -1,28 +1,19 @@
-# Node modules
+# Backend executable
+backend/arc1610_api.exe
+
+# VS Code packaged extension
+*.vsix
+
+# Dependency directories
 node_modules/
 
+# Compiled output folder
+dist/
 
-# Build and distribution outputs
-arc1610_api.exe
-build/
-localpycs/
-
-
-venv/
-*/venv/
-.venv/
-env/
-.env
-
-__pycache__/
-
-
-
-# VS Code and development artifacts
+# VS Code workspace settings
 .vscode/
-.vscode-test.mjs
-.vscode-test/
 
-
-backend/arc1610_api.exe
-*.exe
+# Build artifacts and logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
