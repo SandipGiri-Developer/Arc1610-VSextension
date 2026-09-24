@@ -1,28 +1,72 @@
 {
   "name": "arc1610",
   "displayName": "Arc1610",
-  "description": "An AI assistant that knows your entire codebase.",
-  "version": "1.0.0",
-  "publisher": "Sandip Giri",
+  "description": "An AI coding assistant that understands your entire codebase. Supports local models via Ollama and cloud providers like OpenAI and Anthropic.",
+  "version": "0.1.0",
+  "publisher": "SandipGiri",
   "engines": {
     "vscode": "^1.85.0"
   },
   "main": "./dist/extension.js",
   "icon": "media/icon.png",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/SandipGiri-Developer/Arc1610-extension.git"
   },
   "categories": [
-    "Other",
+    "AI",
     "Machine Learning",
-    "Programming Languages"
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "coding assistant",
+    "ollama",
+    "openai",
+    "anthropic",
+    "codebase",
+    "indexing"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
       {
+        "command": "arc1610.openChat",
+        "title": "Arc1610: Open Chat",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "arc1610.newChat",
+        "title": "Arc1610: New Chat Session",
+        "icon": "$(add)"
+      },
+      {
         "command": "arc1610.indexWorkspace",
-        "title": "Arc1610: Index this Workspace"
+        "title": "Arc1610: Index Workspace"
+      },
+      {
+        "command": "arc1610.reindexWorkspace",
+        "title": "Arc1610: Re-index Workspace (Full)"
+      },
+      {
+        "command": "arc1610.cancelIndexing",
+        "title": "Arc1610: Cancel Indexing"
+      },
+      {
+        "command": "arc1610.addFileContext",
+        "title": "Arc1610: Add File to Chat Context"
+      },
+      {
+        "command": "arc1610.addSelectionContext",
+        "title": "Arc1610: Add Selection to Chat Context"
+      },
+      {
+        "command": "arc1610.configureProvider",
+        "title": "Arc1610: Configure AI Provider"
       }
     ],
     "viewContainers": {
@@ -37,54 +81,149 @@
     "views": {
       "arc1610-sidebar": [
         {
-          "id": "arc1610.view",
+          "id": "arc1610.chatView",
           "name": "Arc1610 Assistant",
           "type": "webview"
         }
       ]
     },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "arc1610.addSelectionContext",
+          "when": "editorHasSelection",
+          "group": "arc1610@1"
+        },
+        {
+          "command": "arc1610.addFileContext",
+          "group": "arc1610@2"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "arc1610.newChat",
+          "when": "view == arc1610.chatView",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "arc1610.openChat",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "arc1610.addSelectionContext",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l",
+        "when": "editorHasSelection"
+      }
+    ],
     "configuration": {
       "title": "Arc1610",
       "properties": {
+        "arc1610.provider": {
+          "type": "string",
+          "default": "ollama",
+          "enum": [
+            "ollama",
+            "openai",
+            "anthropic"
+          ],
+          "enumDescriptions": [
+            "Local Ollama instance (free, private)",
+            "OpenAI API (requires API key)",
+            "Anthropic Claude API (requires API key)"
+          ],
+          "description": "The AI provider to use for chat and code generation."
+        },
         "arc1610.modelName": {
           "type": "string",
-          "default": "mistral",
-          "description": "The local Ollama model to use for inference."
+          "default": "",
+          "description": "The model name to use. Leave empty for provider default (e.g., llama3.2 for Ollama, gpt-4o-mini for OpenAI, claude-sonnet-4-20250514 for Anthropic)."
         },
-        "arc1610.apiPort": {
+        "arc1610.ollama.endpoint": {
+          "type": "string",
+          "default": "http://127.0.0.1:11434",
+          "description": "Ollama API endpoint URL."
+        },
+        "arc1610.openai.baseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "OpenAI-compatible API base URL."
+        },
+        "arc1610.maxTokens": {
           "type": "number",
-          "default": 8000,
-          "description": "Port to run the local API backend on."
+          "default": 4096,
+          "description": "Maximum tokens for model responses."
+        },
+        "arc1610.indexing.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic workspace indexing for context-aware responses."
+        },
+        "arc1610.indexing.maxFileSize": {
+          "type": "number",
+          "default": 1048576,
+          "description": "Maximum file size in bytes to index (default: 1MB)."
+        },
+        "arc1610.indexing.additionalIgnorePatterns": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional glob patterns to exclude from indexing (gitignore syntax)."
+        },
+        "arc1610.agent.maxIterations": {
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Maximum number of agent tool-use iterations per request."
+        },
+        "arc1610.agent.requireApproval": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require explicit user approval before applying file modifications."
         }
       }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
+    "compile": "webpack --mode development",
+    "watch": "webpack --watch --mode development",
     "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "build:webview": "cd webview && npm run build",
+    "lint": "eslint src --ext .ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "package:vsix": "npx @vscode/vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "gpt-tokenizer": "^2.2.1",
+    "ignore": "^5.3.1",
+    "uuid": "^9.0.0",
+    "vectra": "^0.9.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "@types/vscode": "^1.105.0",
-    "@typescript-eslint/eslint-plugin": "^8.45.0",
-    "@typescript-eslint/parser": "^8.45.0",
-    "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2",
-    "eslint": "^9.36.0",
-    "ts-loader": "^9.5.4",
-    "typescript": "^5.9.3",
-    "webpack": "^5.102.0",
-    "webpack-cli": "^6.0.1"
-  },
-  "activationEvents": [
-    "onStartupFinished"
-  ]
+    "@types/node": "20.x",
+    "@types/uuid": "^9.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vscode/vsce": "^3.0.0",
+    "eslint": "^9.0.0",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.13",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^6.0.0"
+  }
 }
