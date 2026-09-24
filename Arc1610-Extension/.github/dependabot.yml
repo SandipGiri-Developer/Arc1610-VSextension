@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "vscode"
+  
+  - package-ecosystem: "npm"
+    directory: "/webview"
+    schedule:
+      interval: "weekly"
