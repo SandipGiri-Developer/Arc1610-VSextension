@@ -23,6 +23,7 @@ import { FallbackEmbeddingProvider, IEmbeddingProvider, OllamaEmbeddingProvider 
 import { Chunk, IndexingProgress, SearchResult } from './types';
 import { VectorStore } from './vectorStore';
 import { walkWorkspace, WalkOptions } from './walkDir';
+import { OllamaManager } from '../utils/ollamaManager';
 
 export interface IndexerConfig {
   maxFileSize: number;
@@ -104,6 +105,13 @@ export class CodebaseIndexer {
     this.abortController = new AbortController();
 
     try {
+      // Ensure Ollama is running since we use it for embeddings
+      const isRunning = await OllamaManager.ensureRunning(this.config.ollamaEndpoint);
+      if (!isRunning) {
+        this.emitProgress('error', 0, 'Indexing cancelled: Ollama is required for embeddings but is not running.');
+        return;
+      }
+
       const workspaceRoot = folders[0].uri.fsPath;
 
       // Initialize embedding provider
