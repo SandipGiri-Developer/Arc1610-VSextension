@@ -5,7 +5,7 @@
  *  User request → gather context → call model → parse response/tool request
  *  → validate tool → execute → return result → continue until done/cancelled/limit
  * 
- * Inspired by Continue's core.ts handleToolCall pattern but simplified for v1.0.
+ * Inspired by ARC's core.ts handleToolCall pattern but simplified for v1.0.
  */
 
 import * as vscode from 'vscode';

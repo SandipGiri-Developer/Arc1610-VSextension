@@ -1,6 +1,6 @@
 /**
  * Indexing type definitions for ARC1610.
- * Adapted from Continue's indexing/types.ts architecture.
+ * Adapted from ARC's indexing/types.ts architecture.
  */
 /** Metadata for a chunk of indexed content. */
 export interface Chunk {

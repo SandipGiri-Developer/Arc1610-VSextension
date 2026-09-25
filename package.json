@@ -69,12 +69,12 @@
         "title": "Arc1610: Configure AI Provider"
       }
     ],
-    "viewContainers": {
+    "viewsContainers": {
       "activitybar": [
         {
           "id": "arc1610-sidebar",
           "title": "Arc1610",
-          "icon": "$(hubot)"
+          "icon": "media/icon.png"
         }
       ]
     },

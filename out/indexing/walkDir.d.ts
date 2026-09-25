@@ -1,8 +1,8 @@
 /**
  * Workspace file traversal for ARC1610 indexing.
  *
- * Adapted from Continue's core/indexing/walkDir.ts DFS walker.
- * Key behaviors preserved from Continue:
+ * Adapted from ARC's core/indexing/walkDir.ts DFS walker.
+ * Key behaviors preserved from ARC:
  *  - DFS traversal with an explicit stack (not recursive)
  *  - Per-directory ignore context stacking (.gitignore + .arc1610ignore)
  *  - Symlink skipping
@@ -29,7 +29,7 @@ export interface WalkResult {
 /**
  * Walk a workspace directory, respecting ignore rules.
  *
- * Design notes (adapted from Continue's DFSWalker):
+ * Design notes (adapted from ARC's DFSWalker):
  * - Uses an explicit stack to avoid call-stack overflow on deep trees
  * - Builds ignore contexts per-directory by reading .gitignore and .arc1610ignore files
  * - Applies default security ignores + user-configured patterns globally

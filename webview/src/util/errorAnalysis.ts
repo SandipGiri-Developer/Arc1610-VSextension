@@ -1,0 +1,1 @@
+export const analyzeError = (error: any, selectedModel: any) => ({ parsedError: String(error), statusCode: 500, message: String(error), modelTitle: 'model', providerName: 'provider', apiKeyUrl: '', helpUrl: '', customErrorMessage: '' });

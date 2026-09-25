@@ -1,7 +1,7 @@
 /**
  * LLM Provider abstraction for ARC1610.
  *
- * Inspired by Continue's BaseLLM interface but simplified for the first release.
+ * Inspired by ARC's BaseLLM interface but simplified for the first release.
  * Each provider implements streaming chat completion with tool support where available.
  */
 /** A single message in a conversation. */

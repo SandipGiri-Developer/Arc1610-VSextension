@@ -3,6 +3,20 @@
 out/**
 node_modules/**
 src/**
+backend/**
+__mocks__/**
+.arc1610/**
+.github/**
+core/**
+
+# Ignore everything in webview except the compiled dist folder
+webview/node_modules/**
+webview/src/**
+webview/public/**
+webview/*.ts
+webview/*.json
+webview/*.html
+
 .gitignore
 .yarnrc
 webpack.config.js
@@ -12,11 +26,3 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
-
-.vscode/**
-node_modules/**
-src/**
-backend/**
-.gitignore
-webpack.config.js
-tsconfig.json

@@ -2,7 +2,7 @@
  * Vector store for ARC1610 codebase indexing.
  *
  * Uses a simple JSON-based vector storage with cosine similarity search.
- * Inspired by Continue's LanceDbIndex.ts pattern but uses a pure-TypeScript
+ * Inspired by ARC's LanceDbIndex.ts pattern but uses a pure-TypeScript
  * approach for cross-platform compatibility (no native dependencies).
  *
  * Storage format: JSON files in the .arc1610/ directory within the workspace.

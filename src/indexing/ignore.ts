@@ -1,7 +1,7 @@
 /**
  * File ignore rules for ARC1610 indexing.
  * 
- * Adapted from Continue's core/indexing/ignore.ts.
+ * Adapted from ARC's core/indexing/ignore.ts.
  * Implements a layered ignore system:
  *  1. Security-critical patterns (always excluded: .env, keys, certs, secrets)
  *  2. Default indexing exclusions (binaries, media, lockfiles, build artifacts)
