@@ -1,55 +1,113 @@
 @import "tailwindcss";
 
-@layer base {
-  body {
-    padding: 0;
-    margin: 0;
-    color: var(--vscode-foreground);
-    font-family: var(--vscode-font-family);
-    font-size: var(--vscode-font-size);
-    background-color: var(--vscode-sideBar-background);
-    height: 100vh;
-    overflow: hidden;
-  }
+/* ─── ARC1610 Design Tokens ─────────────────────────────────────────────── */
+/* All visual properties are centralized here. A future redesign should     */
+/* mostly involve changing these tokens, not editing component files.        */
+
+:root {
+  /* Spacing scale */
+  --arc-space-1: 4px;
+  --arc-space-2: 8px;
+  --arc-space-3: 12px;
+  --arc-space-4: 16px;
+  --arc-space-5: 20px;
+  --arc-space-6: 24px;
+
+  /* Typography */
+  --arc-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --arc-font-mono: var(--vscode-editor-font-family, "Fira Code", "Cascadia Code",
+    Consolas, "Courier New", monospace);
+  --arc-font-size-xs: 11px;
+  --arc-font-size-sm: 12px;
+  --arc-font-size-base: 13px;
+  --arc-font-size-lg: 14px;
+
+  /* Borders & Radii */
+  --arc-radius-sm: 3px;
+  --arc-radius-md: 5px;
+  --arc-radius-lg: 8px;
+  --arc-border: var(--vscode-panel-border, rgba(128, 128, 128, 0.35));
+
+  /* Surfaces — derived from VS Code theme */
+  --arc-bg-primary: var(--vscode-sideBar-background);
+  --arc-bg-secondary: var(--vscode-editor-background);
+  --arc-bg-input: var(--vscode-input-background);
+  --arc-bg-hover: var(--vscode-list-hoverBackground);
+  --arc-bg-active: var(--vscode-list-activeSelectionBackground);
+  --arc-bg-toolbar-hover: var(--vscode-toolbar-hoverBackground);
+  --arc-bg-badge: var(--vscode-badge-background);
+  --arc-bg-code: var(--vscode-textCodeBlock-background);
+
+  /* Text colors */
+  --arc-text-primary: var(--vscode-foreground);
+  --arc-text-secondary: var(--vscode-descriptionForeground);
+  --arc-text-muted: var(--vscode-disabledForeground);
+  --arc-text-link: var(--vscode-textLink-foreground);
+  --arc-text-badge: var(--vscode-badge-foreground);
+  --arc-text-input: var(--vscode-input-foreground);
+  --arc-text-icon: var(--vscode-icon-foreground);
+  --arc-text-title: var(--vscode-sideBarTitle-foreground);
+
+  /* Interactive */
+  --arc-focus-border: var(--vscode-focusBorder);
+  --arc-input-border: var(--vscode-input-border, transparent);
+  --arc-btn-bg: var(--vscode-button-background);
+  --arc-btn-fg: var(--vscode-button-foreground);
+  --arc-btn-hover: var(--vscode-button-hoverBackground);
+
+  /* Status */
+  --arc-error: var(--vscode-errorForeground, #f44747);
+  --arc-warning: var(--vscode-editorWarning-foreground, #cca700);
+  --arc-success: #89d185;
 }
 
-#root {
+/* ─── Base Reset ────────────────────────────────────────────────────────── */
+html, body, #root {
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--arc-bg-primary);
+  color: var(--arc-text-primary);
+  font-family: var(--arc-font-sans);
+  font-size: var(--arc-font-size-base);
+  line-height: 1.4;
 }
 
-* {
-  box-sizing: border-box;
+/* Remove default focus ring, use theme focus */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 1px solid var(--arc-focus-border);
+  outline-offset: -1px;
 }
 
-/* Base VS Code elements since Tailwind resets them */
-input, textarea, select {
-  color: var(--vscode-input-foreground);
-  background-color: var(--vscode-input-background);
-  border: 1px solid var(--vscode-input-border);
-  font-family: inherit;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: 1px solid var(--vscode-focusBorder);
-  border-color: transparent;
-}
-
-/* Scrollbars */
+/* Scrollbar styling to match VS Code */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
-
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 ::-webkit-scrollbar-thumb {
-  background-color: var(--vscode-scrollbarSlider-background);
+  background: var(--vscode-scrollbarSlider-background);
+  border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--vscode-scrollbarSlider-hoverBackground);
+  background: var(--vscode-scrollbarSlider-hoverBackground);
+}
+::-webkit-scrollbar-thumb:active {
+  background: var(--vscode-scrollbarSlider-activeBackground);
 }
 
-::-webkit-scrollbar-thumb:active {
-  background-color: var(--vscode-scrollbarSlider-activeBackground);
+/* ─── Utility: fade-in animation ────────────────────────────────────────── */
+@keyframes arc-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.arc-fade-in {
+  animation: arc-fade-in 0.15s ease-out;
 }

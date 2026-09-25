@@ -41,6 +41,7 @@ export type WebviewToExtensionMessage = {
 } | {
     type: 'executeCommand';
     command: string;
+    args?: unknown[];
 } | {
     type: 'webviewReady';
 };

@@ -23,7 +23,7 @@ export type WebviewToExtensionMessage =
   | { type: 'startIndexing'; fullReindex?: boolean }
   | { type: 'cancelIndexing' }
   | { type: 'getIndexStatus' }
-  | { type: 'executeCommand'; command: string }
+  | { type: 'executeCommand'; command: string; args?: unknown[] }
   | { type: 'webviewReady' };
 
 export type ExtensionToWebviewMessage =
