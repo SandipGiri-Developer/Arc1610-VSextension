@@ -1,113 +1,146 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* ─── ARC1610 Design Tokens ─────────────────────────────────────────────── */
-/* All visual properties are centralized here. A future redesign should     */
-/* mostly involve changing these tokens, not editing component files.        */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/InterDisplay-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono/JetBrainsMono-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
 
 :root {
-  /* Spacing scale */
-  --arc-space-1: 4px;
-  --arc-space-2: 8px;
-  --arc-space-3: 12px;
-  --arc-space-4: 16px;
-  --arc-space-5: 20px;
-  --arc-space-6: 24px;
-
-  /* Typography */
-  --arc-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  --arc-font-mono: var(--vscode-editor-font-family, "Fira Code", "Cascadia Code",
-    Consolas, "Courier New", monospace);
-  --arc-font-size-xs: 11px;
-  --arc-font-size-sm: 12px;
-  --arc-font-size-base: 13px;
-  --arc-font-size-lg: 14px;
-
-  /* Borders & Radii */
-  --arc-radius-sm: 3px;
-  --arc-radius-md: 5px;
-  --arc-radius-lg: 8px;
-  --arc-border: var(--vscode-panel-border, rgba(128, 128, 128, 0.35));
-
-  /* Surfaces — derived from VS Code theme */
-  --arc-bg-primary: var(--vscode-sideBar-background);
-  --arc-bg-secondary: var(--vscode-editor-background);
-  --arc-bg-input: var(--vscode-input-background);
-  --arc-bg-hover: var(--vscode-list-hoverBackground);
-  --arc-bg-active: var(--vscode-list-activeSelectionBackground);
-  --arc-bg-toolbar-hover: var(--vscode-toolbar-hoverBackground);
-  --arc-bg-badge: var(--vscode-badge-background);
-  --arc-bg-code: var(--vscode-textCodeBlock-background);
-
-  /* Text colors */
-  --arc-text-primary: var(--vscode-foreground);
-  --arc-text-secondary: var(--vscode-descriptionForeground);
-  --arc-text-muted: var(--vscode-disabledForeground);
-  --arc-text-link: var(--vscode-textLink-foreground);
-  --arc-text-badge: var(--vscode-badge-foreground);
-  --arc-text-input: var(--vscode-input-foreground);
-  --arc-text-icon: var(--vscode-icon-foreground);
-  --arc-text-title: var(--vscode-sideBarTitle-foreground);
-
-  /* Interactive */
-  --arc-focus-border: var(--vscode-focusBorder);
-  --arc-input-border: var(--vscode-input-border, transparent);
-  --arc-btn-bg: var(--vscode-button-background);
-  --arc-btn-fg: var(--vscode-button-foreground);
-  --arc-btn-hover: var(--vscode-button-hoverBackground);
-
-  /* Status */
-  --arc-error: var(--vscode-errorForeground, #f44747);
-  --arc-warning: var(--vscode-editorWarning-foreground, #cca700);
-  --arc-success: #89d185;
+  --example-var: rgb(30, 30, 30);
 }
 
-/* ─── Base Reset ────────────────────────────────────────────────────────── */
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: var(--arc-bg-primary);
-  color: var(--arc-text-primary);
-  font-family: var(--arc-font-sans);
-  font-size: var(--arc-font-size-base);
-  line-height: 1.4;
+  line-height: 1.3;
+  background-color: var(--vscode-editor-background);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
 }
 
-/* Remove default focus ring, use theme focus */
+body {
+  padding: 0;
+  color: var(--vscode-editor-foreground);
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+}
+
+/* To override the default `-webkit-focus-ring-color` that is an ugly orange */
 *:focus {
   outline: none;
 }
-*:focus-visible {
-  outline: 1px solid var(--arc-focus-border);
-  outline-offset: -1px;
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Scrollbar styling to match VS Code */
-::-webkit-scrollbar {
+.fade-in-span {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.truncate-start {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  direction: rtl;
+  width: 100%;
+}
+
+.scroll-container {
+  overflow-y: auto; /* Enable vertical scrolling only if needed */
+  scrollbar-width: thin; /* Firefox */
+  padding-right: 4px;
+}
+
+.scroll-container::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--vscode-scrollbarSlider-background);
+
+.scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
   border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--vscode-scrollbarSlider-hoverBackground);
-}
-::-webkit-scrollbar-thumb:active {
-  background: var(--vscode-scrollbarSlider-activeBackground);
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-/* ─── Utility: fade-in animation ────────────────────────────────────────── */
-@keyframes arc-fade-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
 }
-.arc-fade-in {
-  animation: arc-fade-in 0.15s ease-out;
+
+.scroll-container:is(:hover, :focus)::-webkit-scrollbar {
+  display: block; /* Show scrollbar only on hover or focus */
+}
+
+/* Debug: visible flash when component re-renders */
+@keyframes rerenderFlash {
+  0% {
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.9) inset;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0) inset;
+  }
+}
+
+.rerender-flash {
+  animation: rerenderFlash 180ms ease-out;
+}
+
+.render-count {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(255, 0, 0, 0.15);
+  color: rgba(255, 0, 0, 0.9);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
