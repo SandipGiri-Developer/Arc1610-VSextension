@@ -161,7 +161,11 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
           break;
           
         case 'executeCommand':
-          vscode.commands.executeCommand(msg.command);
+          if (msg.args && msg.args.length > 0) {
+            vscode.commands.executeCommand(msg.command, ...msg.args);
+          } else {
+            vscode.commands.executeCommand(msg.command);
+          }
           break;
           
         case 'approveAction':
