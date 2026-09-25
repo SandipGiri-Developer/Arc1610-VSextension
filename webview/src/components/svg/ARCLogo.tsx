@@ -1,14 +1,14 @@
 import { vscForeground } from "..";
 
-interface ContinueLogoProps {
+interface ARCLogoProps {
   height?: number;
   width?: number;
 }
 
-export default function ContinueLogo({
+export default function ARCLogo({
   height = 987,
   width = 299,
-}: ContinueLogoProps) {
+}: ARCLogoProps) {
   return (
     <svg
       width={width}

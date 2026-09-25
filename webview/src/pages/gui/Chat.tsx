@@ -2,7 +2,11 @@ const useOnboardingCard = () => ({show: false}); const cancelStream = () => ({ty
 import {
   ArrowLeftIcon,
   ChatBubbleOvalLeftIcon,
+  Cog6ToothIcon,
+  ClockIcon,
+  PlusIcon,
 } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 import { Editor, JSONContent } from "@tiptap/react";
 import { ChatHistoryItem, InputModifiers } from "core";
 import { ChatMessage } from "core";
@@ -22,7 +26,7 @@ const useFindWidget = (s?: any, t?: any, u?: any) => ({ widget: <></>, highlight
 import TimelineItem from "../../components/gui/TimelineItem";
 import { NewSessionButton } from "../../components/mainInput/belowMainInput/NewSessionButton";
 import ThinkingBlockPeek from "../../components/mainInput/belowMainInput/ThinkingBlockPeek";
-import ContinueInputBox from "../../components/mainInput/ContinueInputBox";
+import ARCInputBox from "../../components/mainInput/ARCInputBox";
 
 import StepContainer from "../../components/StepContainer";
 import { TabBar } from "../../components/TabBar/TabBar";
@@ -42,14 +46,58 @@ import {
 import { isJetBrains, isMetaEquivalentKeyPressed } from "../../util";
 import { ToolCallDiv } from "./ToolCallDiv";
 import { submitEditorAndInitAtIndex, streamUpdate, setInactive } from "../../redux/slices/sessionSlice";
+
+function getTextFromJSONContent(content: any): string {
+  if (!content) return "";
+  if (typeof content === "string") return content;
+  if (content.type === "text" && content.text) return content.text;
+  if (content.content && Array.isArray(content.content)) {
+    return content.content.map(getTextFromJSONContent).join(content.type === "paragraph" ? "\n" : "");
+  }
+  return "";
+}
+
 const streamResponseThunk = (payload: any): any => (dispatch: any, getState: any) => {
   const state = getState();
   const index = payload.index ?? state.session.history.length;
   dispatch(submitEditorAndInitAtIndex({ index, editorState: payload.editorState }));
-  setTimeout(() => {
-    dispatch(streamUpdate([{ role: "assistant", content: "This is a placeholder response." }]));
-    dispatch(setInactive());
-  }, 300);
+  
+  const text = payload.text || getTextFromJSONContent(payload.editorState) || "New message";
+  
+  const handler = (event: MessageEvent) => {
+    const msg = event.data;
+    if (!msg || typeof msg !== 'object') return;
+    
+    switch (msg.type) {
+      case 'streamContent':
+        dispatch(streamUpdate([{ role: "assistant", content: msg.content }]));
+        break;
+      case 'streamDone':
+        dispatch(setInactive());
+        window.removeEventListener('message', handler);
+        break;
+      case 'streamError':
+        dispatch(streamUpdate([{ role: "assistant", content: `\n\nError: ${msg.error}` }]));
+        dispatch(setInactive());
+        window.removeEventListener('message', handler);
+        break;
+      case 'streamCancelled':
+        dispatch(setInactive());
+        window.removeEventListener('message', handler);
+        break;
+    }
+  };
+  
+  window.addEventListener('message', handler);
+  
+  if ((window as any).vscode) {
+    (window as any).vscode.postMessage({ type: 'sendMessage', text });
+  } else {
+    setTimeout(() => {
+      handler({ data: { type: 'streamContent', content: 'Mock response from local dev (not running in VS Code)' } } as any);
+      setTimeout(() => handler({ data: { type: 'streamDone' } } as any), 100);
+    }, 500);
+  }
 };
 
 import { useStore } from "react-redux";
@@ -112,6 +160,7 @@ function fallbackRender({ error, resetErrorBoundary }: any) {
 }
 
 export function Chat() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const ideMessenger = useContext(IdeMessengerContext);
   const reduxStore = useStore<RootState>();
@@ -200,9 +249,10 @@ export function Chat() {
         ? (selectedModelByRole.edit ?? selectedModelByRole.chat)
         : selectedModelByRole.chat;
 
-      if (!model) {
-        return;
-      }
+      // if (!model) {
+      //   return;
+      // }
+
 
       if (isCurrentlyInEdit && codeToEditSnapshot.length === 0) {
         return;
@@ -279,7 +329,7 @@ export function Chat() {
 
       if (message.role === "user") {
         return (
-          <ContinueInputBox
+          <ARCInputBox
             onEnter={(editorState, modifiers) =>
               sendInput(editorState, modifiers, index)
             }
@@ -382,6 +432,23 @@ export function Chat() {
     <>
       {!!showSessionTabs && !isInEdit && <TabBar ref={tabsRef} />}
       {widget}
+      <div className="flex flex-row justify-end gap-2 px-3 pt-2">
+        <PlusIcon 
+          className="w-4 h-4 cursor-pointer hover:opacity-80" 
+          onClick={() => dispatch(newSession())} 
+          title="New Session"
+        />
+        <ClockIcon 
+          className="w-4 h-4 cursor-pointer hover:opacity-80" 
+          onClick={() => navigate("/history")} 
+          title="History"
+        />
+        <Cog6ToothIcon 
+          className="w-4 h-4 cursor-pointer hover:opacity-80" 
+          onClick={() => navigate("/config")} 
+          title="Settings"
+        />
+      </div>
 
       <StepsDiv
         ref={stepsDivRef}
@@ -418,7 +485,7 @@ export function Chat() {
           ))}
       </StepsDiv>
       <div className={"relative shrink-0"}>
-        <ContinueInputBox
+        <ARCInputBox
           isMainInput
           isLastUserInput={false}
           onEnter={(editorState, modifiers, editor) =>

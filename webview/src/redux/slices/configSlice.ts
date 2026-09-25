@@ -1,16 +1,16 @@
 export type ConfigResult<T> = { config: T; errors?: any[] };
 export type ConfigValidationError = any;
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BrowserSerializedContinueConfig } from "core";
+import { BrowserSerializedARCConfig } from "core";
 const DEFAULT_CONTEXT_LENGTH = 128000;
 
 export type ConfigState = {
   configError: ConfigValidationError[] | undefined;
-  config: BrowserSerializedContinueConfig;
+  config: BrowserSerializedARCConfig;
   loading: boolean;
 };
 
-export const EMPTY_CONFIG: BrowserSerializedContinueConfig = {
+export const EMPTY_CONFIG: BrowserSerializedARCConfig = {
   slashCommands: [],
   contextProviders: [],
   tools: [],
@@ -52,7 +52,7 @@ export const configSlice = createSlice({
       state,
       {
         payload: result,
-      }: PayloadAction<ConfigResult<BrowserSerializedContinueConfig>>,
+      }: PayloadAction<ConfigResult<BrowserSerializedARCConfig>>,
     ) => {
       const { config, errors } = result;
       if (!errors || errors.length === 0) {
@@ -74,7 +74,7 @@ export const configSlice = createSlice({
     },
     updateConfig: (
       state,
-      { payload: config }: PayloadAction<BrowserSerializedContinueConfig>,
+      { payload: config }: PayloadAction<BrowserSerializedARCConfig>,
     ) => {
       state.config = config;
     },

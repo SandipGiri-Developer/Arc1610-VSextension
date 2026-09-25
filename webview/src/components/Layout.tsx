@@ -71,7 +71,7 @@ const Layout = () => {
   );
 
   useWebviewListener(
-    "isContinueInputFocused",
+    "isARCInputFocused",
     async () => {
       return false;
     },
@@ -80,7 +80,7 @@ const Layout = () => {
   );
 
   useWebviewListener(
-    "focusContinueInputWithNewSession",
+    "focusARCInputWithNewSession",
     async () => {
       navigate(ROUTES.HOME);
       if (isInEdit) {

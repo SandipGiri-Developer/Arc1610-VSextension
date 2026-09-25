@@ -232,7 +232,7 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
       if (config.provider === 'ollama') {
         const isRunning = await OllamaManager.ensureRunning(config.endpoint);
         if (!isRunning) {
-          this.postMessage({ type: 'streamError', error: 'Ollama is not running. Please start it to continue.' });
+          this.postMessage({ type: 'streamError', error: 'Ollama is not running. Please start it to arc.' });
           this.postMessage({ type: 'streamDone' });
           return;
         }

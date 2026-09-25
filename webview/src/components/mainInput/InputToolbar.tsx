@@ -5,7 +5,7 @@ import {
   LightBulbIcon as LightBulbIconOutline,
   PhotoIcon,
 } from "@heroicons/react/24/outline";
-import { LightBulbIcon as LightBulbIconSolid } from "@heroicons/react/24/solid";
+import { LightBulbIcon as LightBulbIconSolid, ArrowRightIcon, StopIcon } from "@heroicons/react/24/solid";
 import { InputModifiers } from "core";
 const modelSupportsImages = (...args: any) => false;
 const modelSupportsReasoning = (arg: any) => false;
@@ -57,6 +57,7 @@ function InputToolbar(props: InputToolbarProps) {
   const hasReasoningEnabled = useAppSelector(
     (store) => store.session.hasReasoningEnabled,
   );
+  const isStreaming = useAppSelector((state) => state.session.isStreaming);
   const isEnterDisabled =
     props.disabled || (isInEdit && codeToEdit.length === 0);
 
@@ -221,28 +222,43 @@ function InputToolbar(props: InputToolbarProps) {
               </span>
             </HoverItem>
           )}
-          <ToolTip place="top" content="Send (⏎)">
-            <Button
-              variant={props.isMainInput ? "primary" : "secondary"}
-              size="sm"
-              data-testid="submit-input-button"
-              onClick={async (e) => {
-                if (props.onEnter) {
-                  props.onEnter({
-                    useCodebase: false,
-                    noContext: useActiveFile
-                      ? isMetaEquivalentKeyPressed(e as any) || e.altKey
-                      : !(isMetaEquivalentKeyPressed(e as any) || e.altKey),
-                  });
-                }
-              }}
-              disabled={isEnterDisabled}
-            >
-              <span className="hidden md:inline">
-                ⏎ {props.toolbarOptions?.enterText ?? "Enter"}
-              </span>
-              <span className="md:hidden">⏎</span>
-            </Button>
+          <ToolTip place="top" content={isStreaming ? "Stop generating" : "Send (⏎)"}>
+            {isStreaming ? (
+              <button
+                data-testid="stop-generation-button"
+                onClick={() => {
+                  ideMessenger.post("cancelGeneration", undefined);
+                  if ((window as any).vscode) {
+                    (window as any).vscode.postMessage({ type: 'cancelGeneration' });
+                  }
+                }}
+                className={`flex items-center justify-center w-8 h-8 rounded-md border-none transition-colors bg-red-500 text-white hover:bg-red-400 cursor-pointer`}
+              >
+                <StopIcon className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                data-testid="submit-input-button"
+                onClick={async (e) => {
+                  if (props.onEnter) {
+                    props.onEnter({
+                      useCodebase: false,
+                      noContext: useActiveFile
+                        ? isMetaEquivalentKeyPressed(e as any) || e.altKey
+                        : !(isMetaEquivalentKeyPressed(e as any) || e.altKey),
+                    });
+                  }
+                }}
+                disabled={isEnterDisabled}
+                className={`flex items-center justify-center w-8 h-8 rounded-full border-none transition-colors ${
+                  isEnterDisabled
+                    ? "bg-gray-500 text-gray-300 cursor-not-allowed opacity-50"
+                    : "bg-blue-500 text-white hover:bg-blue-400 cursor-pointer"
+                }`}
+              >
+                <ArrowRightIcon className="w-4 h-4" />
+              </button>
+            )}
           </ToolTip>
         </div>
       </div>

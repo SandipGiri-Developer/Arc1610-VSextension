@@ -1,4 +1,4 @@
-interface ContinueSignetProps {
+interface ARCSignetProps {
   /** Height of the signet in pixels */
   height?: number;
   /** Width of the signet in pixels */
@@ -8,13 +8,13 @@ interface ContinueSignetProps {
 }
 
 /**
- * The Continue signet/logo symbol without text
+ * The ARC signet/logo symbol without text
  */
-export default function ContinueSignet({
+export default function ARCSignet({
   height = 103,
   width = 107,
   className = "",
-}: ContinueSignetProps) {
+}: ARCSignetProps) {
   return (
     <svg
       width={width}

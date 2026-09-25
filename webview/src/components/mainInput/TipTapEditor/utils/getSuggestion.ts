@@ -169,7 +169,7 @@ export function getContextProviderDropdownOptions(
         action: () => {
           ideMessenger.post(
             "openUrl",
-            "https://docs.continue.dev/customization/context-providers#built-in-context-providers",
+            "https://docs.arc.dev/customization/context-providers#built-in-context-providers",
           );
         },
         description: "",

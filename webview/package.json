@@ -2,7 +2,7 @@
   "name": "gui",
   "private": true,
   "type": "module",
-  "author": "Continue Dev, Inc",
+  "author": "ARC Dev, Inc",
   "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
@@ -16,7 +16,6 @@
     "lint": "eslint --ext ts"
   },
   "dependencies": {
-    "@continuedev/core": "file:../../continue/core",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.0.18",
     "@modelcontextprotocol/ext-apps": "^1.0.1",

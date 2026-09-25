@@ -16,7 +16,7 @@ import { ToolbarOptions } from "./InputToolbar";
 
 import { TipTapEditor } from "./TipTapEditor";
 
-interface ContinueInputBoxProps {
+interface ARCInputBoxProps {
   isLastUserInput: boolean;
   isMainInput?: boolean;
   onEnter: (
@@ -52,7 +52,7 @@ const EDIT_ALLOWED_SLASH_COMMAND_SOURCES: SlashCommandSource[] = [
   "json-custom-command",
 ];
 
-function ContinueInputBox(props: ContinueInputBoxProps) {
+function ARCInputBox(props: ARCInputBoxProps) {
   const isStreaming = useAppSelector((state) => state.session.isStreaming);
   const availableSlashCommands = useAppSelector(
     selectSlashCommandComboBoxInputs,
@@ -110,17 +110,13 @@ function ContinueInputBox(props: ContinueInputBoxProps) {
   return (
     <div
       className={`${props.hidden ? "hidden" : ""}`}
-      data-testid={`continue-input-box-${props.inputId}`}
+      data-testid={`arc-input-box-${props.inputId}`}
     >
       <div className={`relative flex flex-col px-2`}>
         {props.isMainInput && <></>}
         <GradientBorder
-          loading={isStreaming && (props.isLastUserInput || isInEdit) ? 1 : 0}
-          borderColor={
-            isStreaming && (props.isLastUserInput || isInEdit)
-              ? undefined
-              : vscBackground
-          }
+          loading={0}
+          borderColor={vscBackground}
           borderRadius={defaultBorderRadius}
         >
           <TipTapEditor
@@ -150,4 +146,4 @@ function ContinueInputBox(props: ContinueInputBoxProps) {
   );
 }
 
-export default memo(ContinueInputBox);
+export default memo(ARCInputBox);
