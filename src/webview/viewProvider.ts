@@ -375,6 +375,7 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
   <script nonce="${nonce}">
     // Pass VS Code API to the React app
     window.vscode = acquireVsCodeApi();
+    window.vscMediaUrl = "${webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'ARC.png'))}";
     
     // Global error handler to catch script loading/syntax errors
     window.addEventListener('error', function(event) {

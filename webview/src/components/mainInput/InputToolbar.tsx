@@ -193,17 +193,20 @@ function InputToolbar(props: InputToolbarProps) {
           <ToolTip place="top" content={isStreaming ? "Stop generating" : "Send (⏎)"}>
             {isStreaming ? (
               <button
-                data-testid="stop-generation-button"
-                onClick={() => {
-                  ideMessenger.post("cancelGeneration", undefined);
-                  if ((window as any).vscode) {
-                    (window as any).vscode.postMessage({ type: 'cancelGeneration' });
-                  }
-                }}
-                className={`flex items-center justify-center w-8 h-8 rounded-md border-none transition-colors bg-red-500 text-white hover:bg-red-400 cursor-pointer`}
-              >
-                <StopIcon className="w-4 h-4" />
-              </button>
+  data-testid="stop-generation-button"
+  onClick={() => {
+    ideMessenger.post("cancelGeneration", undefined);
+    if ((window as any).vscode) {
+      (window as any).vscode.postMessage({ type: 'cancelGeneration' });
+    }
+  }}
+  className="group flex items-center justify-center w-8 h-8 rounded-full border-none bg-transparent backdrop-blur-md transition-all hover:bg-vsc-foreground/5 cursor-pointer relative"
+>
+  {/* Blur outer circle effect */}
+  <div className="absolute inset-0 rounded-full bg-vsc-background/30 shadow-[0_0_10px_rgba(0,0,0,0.1)] pointer-events-none" />
+  {/* Red square inside */}
+  <div className="w-2.5 h-2.5 bg-[#e05252] rounded-[2px] shadow-[0_0_8px_rgba(224,82,82,0.4)] group-hover:bg-[#f15e5e] transition-colors relative z-10" />
+</button>
             ) : (
               <button
                 data-testid="submit-input-button"
