@@ -57,48 +57,63 @@ function getTextFromJSONContent(content: any): string {
   return "";
 }
 
+// Module-level singleton for the active stream dispatch.
+// Only one stream can be active at a time. Using a module-level variable
+// ensures we never have multiple window.addEventListener calls stacking up.
+let _activeStreamDispatch: ((msg: any) => void) | null = null;
+
+// Installed once, permanently, at module load time.
+window.addEventListener('message', (event: MessageEvent) => {
+  const msg = event.data;
+  if (!msg || typeof msg !== 'object') return;
+
+  // Only route stream messages. Anything else is handled by useWebviewListener.
+  if (!['streamContent', 'streamDone', 'streamError', 'streamCancelled'].includes(msg.type)) return;
+
+  if (_activeStreamDispatch) {
+    _activeStreamDispatch(msg);
+  }
+});
+
 const streamResponseThunk = (payload: any): any => (dispatch: any, getState: any) => {
   const state = getState();
   const index = payload.index ?? state.session.history.length;
   dispatch(submitEditorAndInitAtIndex({ index, editorState: payload.editorState }));
-  
+
   const text = payload.text || getTextFromJSONContent(payload.editorState) || "New message";
-  
-  const handler = (event: MessageEvent) => {
-    const msg = event.data;
-    if (!msg || typeof msg !== 'object') return;
-    
+
+  // Register this dispatch as the sole active handler
+  _activeStreamDispatch = (msg: any) => {
     switch (msg.type) {
       case 'streamContent':
         dispatch(streamUpdate([{ role: "assistant", content: msg.content }]));
         break;
       case 'streamDone':
         dispatch(setInactive());
-        window.removeEventListener('message', handler);
+        _activeStreamDispatch = null;
         break;
       case 'streamError':
         dispatch(streamUpdate([{ role: "assistant", content: `\n\nError: ${msg.error}` }]));
         dispatch(setInactive());
-        window.removeEventListener('message', handler);
+        _activeStreamDispatch = null;
         break;
       case 'streamCancelled':
         dispatch(setInactive());
-        window.removeEventListener('message', handler);
+        _activeStreamDispatch = null;
         break;
     }
   };
-  
-  window.addEventListener('message', handler);
-  
+
   if ((window as any).vscode) {
     (window as any).vscode.postMessage({ type: 'sendMessage', text });
   } else {
     setTimeout(() => {
-      handler({ data: { type: 'streamContent', content: 'Mock response from local dev (not running in VS Code)' } } as any);
-      setTimeout(() => handler({ data: { type: 'streamDone' } } as any), 100);
+      _activeStreamDispatch?.({ type: 'streamContent', content: 'Mock response from local dev (not running in VS Code)' });
+      setTimeout(() => _activeStreamDispatch?.({ type: 'streamDone' }), 100);
     }, 500);
   }
 };
+
 
 import { useStore } from "react-redux";
 const FeedbackDialog = () => <></>;
@@ -432,23 +447,7 @@ export function Chat() {
     <>
       {!!showSessionTabs && !isInEdit && <TabBar ref={tabsRef} />}
       {widget}
-      <div className="flex flex-row justify-end gap-2 px-3 pt-2">
-        <PlusIcon 
-          className="w-4 h-4 cursor-pointer hover:opacity-80" 
-          onClick={() => dispatch(newSession())} 
-          title="New Session"
-        />
-        <ClockIcon 
-          className="w-4 h-4 cursor-pointer hover:opacity-80" 
-          onClick={() => navigate("/history")} 
-          title="History"
-        />
-        <Cog6ToothIcon 
-          className="w-4 h-4 cursor-pointer hover:opacity-80" 
-          onClick={() => navigate("/config")} 
-          title="Settings"
-        />
-      </div>
+
 
       <StepsDiv
         ref={stepsDivRef}
@@ -468,6 +467,7 @@ export function Chat() {
           .map((item: any, index: number) => (
             <div
               key={item.message.id}
+              className="shrink-0"
               style={{
                 minHeight: index === history.length - 1 ? "200px" : 0,
               }}

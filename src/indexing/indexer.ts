@@ -53,7 +53,10 @@ export class CodebaseIndexer {
   private readonly _onProgress = new vscode.EventEmitter<IndexingProgress>();
   readonly onProgress = this._onProgress.event;
 
-  constructor(private config: IndexerConfig = DEFAULT_CONFIG) {}
+  constructor(
+    private config: IndexerConfig = DEFAULT_CONFIG,
+    private storagePath?: string
+  ) {}
 
   /**
    * Update indexer configuration.
@@ -105,11 +108,12 @@ export class CodebaseIndexer {
     this.abortController = new AbortController();
 
     try {
-      // Ensure Ollama is running since we use it for embeddings
-      const isRunning = await OllamaManager.ensureRunning(this.config.ollamaEndpoint);
-      if (!isRunning) {
-        this.emitProgress('error', 0, 'Indexing cancelled: Ollama is required for embeddings but is not running.');
-        return;
+      // Silently check if Ollama is running for embeddings.
+      // If not, we fall back to local n-gram embeddings (see createEmbeddingProvider).
+      // We do NOT prompt the user here — prompts only happen on explicit chat messages.
+      const ollamaAvailable = await OllamaManager.isRunning(this.config.ollamaEndpoint);
+      if (!ollamaAvailable) {
+        logger.info('Ollama not available for indexing — using local fallback embeddings.');
       }
 
       const workspaceRoot = folders[0].uri.fsPath;
@@ -119,7 +123,9 @@ export class CodebaseIndexer {
 
       // Initialize or load vector store
       if (!this.vectorStore) {
-        this.vectorStore = new VectorStore(workspaceRoot);
+        // Use VS Code extension storage path if provided, otherwise fallback to workspace root
+        const storeLocation = this.storagePath || workspaceRoot;
+        this.vectorStore = new VectorStore(storeLocation);
       }
 
       if (fullReindex) {

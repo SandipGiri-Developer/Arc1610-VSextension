@@ -7,13 +7,26 @@ backend/arc1610_api.exe
 # Dependency directories
 node_modules/
 
-# Compiled output folder
+# Compiled output folders
 dist/
+out/
+webview/dist/
+webview/build/
 
 # VS Code workspace settings
 .vscode/
+*.code-workspace
 
 # Build artifacts and logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# OS / Environment
+.DS_Store
+Thumbs.db
+.env
+
+# Extension specific working directories
+.arc1610
+.continue

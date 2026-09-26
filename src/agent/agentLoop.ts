@@ -24,7 +24,7 @@ import { Logger } from '../utils/logger';
 import { AgentEvent, ITool, ToolResult } from './types';
 import { getAllTools } from './tools';
 
-const SYSTEM_PROMPT = `You are Arc1610, an expert AI coding assistant integrated into VS Code.
+const SYSTEM_PROMPT = `You are KODRA, an expert AI coding assistant integrated into VS Code.
 
 You have access to the user's workspace and can read, search, create, and edit files.
 You can see relevant codebase context retrieved from the workspace index.

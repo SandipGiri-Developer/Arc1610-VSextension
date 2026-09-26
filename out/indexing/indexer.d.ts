@@ -24,6 +24,7 @@ export interface IndexerConfig {
 }
 export declare class CodebaseIndexer {
     private config;
+    private storagePath?;
     private vectorStore;
     private embeddingProvider;
     private abortController;
@@ -31,7 +32,7 @@ export declare class CodebaseIndexer {
     private _paused;
     private readonly _onProgress;
     readonly onProgress: vscode.Event<IndexingProgress>;
-    constructor(config?: IndexerConfig);
+    constructor(config?: IndexerConfig, storagePath?: string | undefined);
     /**
      * Update indexer configuration.
      */

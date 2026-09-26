@@ -160,8 +160,12 @@ export class SearchFilesTool implements ITool {
       let matchCount = 0;
 
       for (const file of files) {
-        if (matchCount >= maxResults) break;
-        if (isSecurityConcern(file.fsPath)) continue;
+        if (matchCount >= maxResults) {
+          break;
+        }
+        if (isSecurityConcern(file.fsPath)) {
+          continue;
+        }
 
         try {
           const content = await fs.readFile(file.fsPath, 'utf-8');

@@ -7,6 +7,7 @@ import { Arc1610ViewProvider } from './webview/viewProvider';
 let indexer: CodebaseIndexer;
 let providerRegistry: ProviderRegistry;
 let logger: Logger;
+let startupTimer: NodeJS.Timeout | undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
   // Initialize logger
@@ -18,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
     providerRegistry = new ProviderRegistry(context.secrets);
     
     const indexerConfig = CodebaseIndexer.readConfig();
-    indexer = new CodebaseIndexer(indexerConfig);
+    indexer = new CodebaseIndexer(indexerConfig, context.storageUri?.fsPath);
     
     // Register webview provider
     const viewProvider = new Arc1610ViewProvider(context.extensionUri, providerRegistry, indexer);
@@ -41,6 +42,14 @@ export async function activate(context: vscode.ExtensionContext) {
       
       vscode.commands.registerCommand('arc1610.newChat', () => {
         viewProvider.newChat();
+      }),
+      
+      vscode.commands.registerCommand('arc1610.viewHistory', () => {
+        viewProvider.navigateTo('/history');
+      }),
+      
+      vscode.commands.registerCommand('arc1610.openSettings', () => {
+        viewProvider.navigateTo('/config');
       }),
       
       vscode.commands.registerCommand('arc1610.indexWorkspace', () => {
@@ -116,7 +125,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const autoIndex = vscode.workspace.getConfiguration('arc1610').get<boolean>('indexing.enabled', true);
     if (autoIndex && vscode.workspace.workspaceFolders) {
       // Small delay to not block startup
-      setTimeout(() => {
+      startupTimer = setTimeout(() => {
         indexer.indexWorkspace(false).catch(err => {
           logger.error('Auto-indexing failed', err);
         });
@@ -132,6 +141,9 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
+  if (startupTimer) {
+    clearTimeout(startupTimer);
+  }
   indexer?.dispose();
   providerRegistry?.dispose();
   logger?.dispose();

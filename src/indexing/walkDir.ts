@@ -132,7 +132,8 @@ export async function walkWorkspace(
       }
     }
 
-    for (const entryName of entries) {
+    // Process all entries in parallel for better performance
+    await Promise.all(entries.map(async (entryName) => {
       const absEntryPath = path.join(current.absPath, entryName);
       const relEntryPath = current.relPath
         ? `${current.relPath}/${entryName}`
@@ -143,12 +144,12 @@ export async function walkWorkspace(
       try {
         entryStat = await fs.lstat(absEntryPath);
       } catch {
-        continue; // Skip entries we can't stat
+        return; // Skip entries we can't stat
       }
 
       // Skip symlinks (same as ARC — avoid duplicate indexing)
       if (entryStat.isSymbolicLink()) {
-        continue;
+        return;
       }
 
       const isDir = entryStat.isDirectory();
@@ -157,10 +158,10 @@ export async function walkWorkspace(
       const testPath = isDir ? `${relEntryPath}/` : relEntryPath;
       try {
         if (localIgnore.ignores(testPath)) {
-          continue;
+          return;
         }
       } catch {
-        continue; // Skip on ignore-checking errors
+        return; // Skip on ignore-checking errors
       }
 
       if (isDir) {
@@ -173,12 +174,12 @@ export async function walkWorkspace(
       } else if (entryStat.isFile()) {
         // Skip oversized files
         if (entryStat.size > maxFileSize) {
-          continue;
+          return;
         }
 
         // Skip empty files
         if (entryStat.size === 0) {
-          continue;
+          return;
         }
 
         files.push(absEntryPath);
@@ -190,7 +191,7 @@ export async function walkWorkspace(
           };
         }
       }
-    }
+    }));
   }
 
   logger.info(`walkWorkspace complete: ${files.length} files in ${normalizedRoot}`);

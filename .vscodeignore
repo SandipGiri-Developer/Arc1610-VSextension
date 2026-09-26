@@ -6,6 +6,7 @@ src/**
 backend/**
 __mocks__/**
 .arc1610/**
+.continue/**
 .github/**
 core/**
 

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "embeddingModelId": "ollama:nomic-embed-text",
-  "createdAt": "2026-09-24T14:47:11.393Z",
-  "updatedAt": "2026-09-25T09:35:24.973Z",
-  "entryCount": 659
+  "embeddingModelId": "fallback:ngram-hash",
+  "createdAt": "2026-09-26T03:58:20.859Z",
+  "updatedAt": "2026-09-26T03:58:20.859Z",
+  "entryCount": 775
 }

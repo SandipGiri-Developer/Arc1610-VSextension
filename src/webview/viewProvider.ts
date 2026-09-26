@@ -74,9 +74,17 @@ export class Arc1610ViewProvider implements vscode.WebviewViewProvider {
     this.agent = null;
     
     if (this.view) {
-      // In a real implementation, we'd tell the UI to clear its state
-      // For now, we'll let the user message trigger a fresh start on the backend
-      this.postMessage({ type: 'streamCancelled' }); 
+      this.postMessage({ type: 'newSession' } as any); 
+    }
+  }
+
+  /**
+   * Navigate the webview to a specific path.
+   */
+  public navigateTo(path: string) {
+    if (this.view) {
+      this.view.show?.(true);
+      this.postMessage({ type: 'navigateTo', path } as any);
     }
   }
 
