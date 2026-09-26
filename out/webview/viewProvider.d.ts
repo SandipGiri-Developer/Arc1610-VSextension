@@ -23,6 +23,10 @@ export declare class Arc1610ViewProvider implements vscode.WebviewViewProvider {
      */
     newChat(): void;
     /**
+     * Navigate the webview to a specific path.
+     */
+    navigateTo(path: string): void;
+    /**
      * Add context to the current chat (from editor commands).
      */
     addContext(filepath: string, content?: string, selection?: string): void;

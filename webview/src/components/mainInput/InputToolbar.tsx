@@ -1,5 +1,13 @@
 const getModelByRole = () => undefined;
-const ModeSelect = () => <></>; const ModelSelect = () => <></>; const exitEdit = (a: any) => ({type: "dummy"});
+import { ModelSelectDropdown } from "./ModelSelectDropdown";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+const ModeSelect = () => (
+  <div className="flex items-center gap-1 bg-vsc-input-background rounded-full px-2 py-0.5 cursor-pointer hover:brightness-125 border border-vsc-commandCenter-inactiveBorder transition-colors">
+    <span className="text-[11px] font-medium text-vsc-foreground">✨ Agent</span>
+    <ChevronDownIcon className="h-3 w-3 text-vsc-foreground" />
+  </div>
+);
+const exitEdit = (a: any) => ({type: "dummy"});
 import {
   AtSymbolIcon,
   LightBulbIcon as LightBulbIconOutline,
@@ -84,19 +92,11 @@ function InputToolbar(props: InputToolbarProps) {
           fontSize: smallFont,
         }}
       >
-        <div className="xs:gap-1.5 flex flex-row items-center gap-1">
+        <div className="xs:gap-1.5 flex flex-row items-center gap-2">
           {!isInEdit && (
-            <ToolTip place="top" content="Select Mode">
-              <HoverItem className="!p-0">
-                <ModeSelect />
-              </HoverItem>
-            </ToolTip>
+            <ModeSelect />
           )}
-          <ToolTip place="top" content="Select Model">
-            <HoverItem className="!p-0">
-              <ModelSelect />
-            </HoverItem>
-          </ToolTip>
+          <ModelSelectDropdown />
           <div className="xs:flex text-description -mb-1 hidden items-center transition-colors duration-200">
             {props.toolbarOptions?.hideImageUpload ||
               (supportsImages && (
@@ -176,39 +176,7 @@ function InputToolbar(props: InputToolbarProps) {
           }}
         >
           {!isInEdit && <ContextStatus />}
-          {!props.toolbarOptions?.hideUseCodebase && !isInEdit && (
-            <div className="hidden transition-colors duration-200 hover:underline md:flex">
-              <HoverItem
-                className={
-                  props.activeKey === "Meta" ||
-                  props.activeKey === "Control" ||
-                  props.activeKey === "Alt"
-                    ? "underline"
-                    : ""
-                }
-                onClick={(e) =>
-                  props.onEnter?.({
-                    useCodebase: false,
-                    noContext: !useActiveFile,
-                  })
-                }
-              >
-                <ToolTip
-                  place="top-end"
-                  content={`${
-                    useActiveFile
-                      ? "Send Without Active File"
-                      : "Send With Active File"
-                  } (${getMetaKeyLabel()}⏎)`}
-                >
-                  <span>
-                    {getMetaKeyLabel()}⏎{" "}
-                    {useActiveFile ? "No active file" : "Active file"}
-                  </span>
-                </ToolTip>
-              </HoverItem>
-            </div>
-          )}
+
           {isInEdit && (
             <HoverItem
               className="hidden hover:underline sm:flex"

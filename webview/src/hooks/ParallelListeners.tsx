@@ -97,45 +97,17 @@ function ParallelListeners() {
     [dispatch, hasDoneInitialConfigLoad, selectedProfileId, reasoningSettings],
   );
 
-  // Load config from the IDE
+  // Load config from the IDE.
+  // NOTE: In the original Continue extension, this called 'config/getSerializedProfileInfo'
+  // via ideMessenger.request(), which would wait for a reply indefinitely via
+  // window.addEventListener. Since KODRA does not implement the Continue config protocol,
+  // those requests would never resolve, leaking one listener per 2-second interval tick.
+  // We skip this and rely on the 'config' message sent by viewProvider on webviewReady.
   useEffect(() => {
-    async function initialLoadConfig() {
-      dispatch(setIsSessionMetadataLoading(true));
-      dispatch(setConfigLoading(true));
-      const result = await ideMessenger.request(
-        "config/getSerializedProfileInfo",
-        undefined,
-      );
-      if (result.status === "success") {
-        await handleConfigUpdate(true, result.content);
-      }
-      dispatch(setConfigLoading(false));
-      if (initialSessionId) {
-        await dispatch(
-          loadSession({
-            sessionId: initialSessionId,
-            saveCurrentSession: false,
-          }),
-        );
-      }
-    }
-    void initialLoadConfig();
-    const interval = setInterval(() => {
-      if (hasDoneInitialConfigLoad.current) {
-        // Init to run on initial config load
-        ideMessenger.post("docs/initStatuses", undefined);
-        void dispatch(updateFileSymbolsFromHistory());
-        void dispatch(refreshSessionMetadata({}));
-
-        // This triggers sending pending status to the GUI for relevant docs indexes
-        clearInterval(interval);
-      } else {
-        void initialLoadConfig();
-      }
-    }, 2_000);
-
-    return () => clearInterval(interval);
-  }, [hasDoneInitialConfigLoad, ideMessenger, initialSessionId]);
+    // Mark config as immediately loaded so downstream effects don't re-poll
+    hasDoneInitialConfigLoad.current = true;
+    dispatch(setConfigLoading(false));
+  }, []);
 
   useWebviewListener(
     "configUpdate",

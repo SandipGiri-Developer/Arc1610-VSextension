@@ -1,6 +1,6 @@
 {
-  "name": "arc1610",
-  "displayName": "Arc1610",
+  "name": "kodra",
+  "displayName": "KODRA",
   "description": "An AI coding assistant that understands your entire codebase. Supports local models via Ollama and cloud providers like OpenAI and Anthropic.",
   "version": "0.1.0",
   "publisher": "SandipGiri",
@@ -36,44 +36,64 @@
     "commands": [
       {
         "command": "arc1610.openChat",
-        "title": "Arc1610: Open Chat",
+        "category": "Kodra",
+        "title": "Open Chat",
         "icon": "$(comment-discussion)"
       },
       {
         "command": "arc1610.newChat",
-        "title": "Arc1610: New Chat Session",
+        "category": "Kodra",
+        "title": "New Chat Session",
         "icon": "$(add)"
       },
       {
+        "command": "arc1610.viewHistory",
+        "category": "Kodra",
+        "title": "History",
+        "icon": "$(history)"
+      },
+      {
+        "command": "arc1610.openSettings",
+        "category": "Kodra",
+        "title": "Settings",
+        "icon": "$(settings-gear)"
+      },
+      {
         "command": "arc1610.indexWorkspace",
-        "title": "Arc1610: Index Workspace"
+        "category": "Kodra",
+        "title": "Index Workspace"
       },
       {
         "command": "arc1610.reindexWorkspace",
-        "title": "Arc1610: Re-index Workspace (Full)"
+        "category": "Kodra",
+        "title": "Re-index Workspace (Full)"
       },
       {
         "command": "arc1610.cancelIndexing",
-        "title": "Arc1610: Cancel Indexing"
+        "category": "Kodra",
+        "title": "Cancel Indexing"
       },
       {
         "command": "arc1610.addFileContext",
-        "title": "Arc1610: Add File to Chat Context"
+        "category": "Kodra",
+        "title": "Add File to Chat Context"
       },
       {
         "command": "arc1610.addSelectionContext",
-        "title": "Arc1610: Add Selection to Chat Context"
+        "category": "Kodra",
+        "title": "Add Selection to Chat Context"
       },
       {
         "command": "arc1610.configureProvider",
-        "title": "Arc1610: Configure AI Provider"
+        "category": "Kodra",
+        "title": "Configure AI Provider"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "arc1610-sidebar",
-          "title": "Arc1610",
+          "title": "KODRA",
           "icon": "media/icon.png"
         }
       ]
@@ -82,36 +102,64 @@
       "arc1610-sidebar": [
         {
           "id": "arc1610.chatView",
-          "name": "Arc1610 Assistant",
+          "name": "KODRA Assistant",
           "type": "webview"
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "arc1610.kodraSubMenu",
+        "label": "Kodra"
+      }
+    ],
     "menus": {
       "editor/context": [
         {
+          "submenu": "arc1610.kodraSubMenu",
+          "group": "0_akodra"
+        }
+      ],
+      "arc1610.kodraSubMenu": [
+        {
           "command": "arc1610.addSelectionContext",
           "when": "editorHasSelection",
-          "group": "arc1610@1"
+          "group": "Kodra"
         },
         {
           "command": "arc1610.addFileContext",
-          "group": "arc1610@2"
+          "group": "Kodra"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "arc1610.addFileContext",
+          "group": "Kodra"
         }
       ],
       "view/title": [
         {
           "command": "arc1610.newChat",
           "when": "view == arc1610.chatView",
-          "group": "navigation"
+          "group": "navigation@1"
+        },
+        {
+          "command": "arc1610.viewHistory",
+          "when": "view == arc1610.chatView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "arc1610.openSettings",
+          "when": "view == arc1610.chatView",
+          "group": "navigation@3"
         }
       ]
     },
     "keybindings": [
       {
         "command": "arc1610.openChat",
-        "key": "ctrl+shift+a",
-        "mac": "cmd+shift+a"
+        "mac": "cmd+l",
+        "key": "ctrl+l"
       },
       {
         "command": "arc1610.addSelectionContext",
@@ -121,7 +169,7 @@
       }
     ],
     "configuration": {
-      "title": "Arc1610",
+      "title": "KODRA",
       "properties": {
         "arc1610.provider": {
           "type": "string",
